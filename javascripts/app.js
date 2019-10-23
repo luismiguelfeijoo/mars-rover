@@ -107,6 +107,31 @@ let grid = [
 
 ]
 
+// This is a function to check if the user entered a valid command
+function valid(string) {
+  let regex = /[^fblr]/;
+  return regex.test(string);
+}
+
+//This is a function to check the for limits and obstacles 
+function checkMovement(rover) {
+  var final = {
+    obstacle: false,
+    outOfLimits: false,
+    message:  ''
+  }
+
+  if (rover.x === -1 || rover.x === 10 || rover.y=== -1 || rover.y === 10) {
+    final.outOfLimits = true; 
+    final.message = `You almost lose our ${rover.name} on mars, we are glad that a martian helped us move back`;
+  } else if (grid[rover.y][rover.x]) {
+    final.obstacle = true; 
+    final.message = `You almost crashed with ${grid[rover.y][rover.x]}. Try to be more carefull next time`;
+  }
+//it returns an object 
+  return final
+}
+
 // This is for placing the rovers depending on the initial position
 grid[rover1.y][rover1.x] = rover1.name;
 grid[rover2.y][rover2.x] = rover2.name;
@@ -115,9 +140,8 @@ grid[rover2.y][rover2.x] = rover2.name;
 //Example: move(rover1,`rfflb`) <== this will move the rover1 following the commands given
 function move(rover,commands) {
   let movements = commands.split(``);
-  let regex = /[^fblr]/;
-  let stop = false;
-  if (regex.test(commands)) {
+
+  if (valid(commands)) {
     return (`You have entered an invalid command`);
   } else {
     movements.forEach(element => {
@@ -126,12 +150,12 @@ function move(rover,commands) {
           rover.travelLog.push(`(${rover.x}, ${rover.y})`);
           grid[rover.y][rover.x] = null;
           moveForward(rover);
-          if (rover.x === -1 || rover.x === 10 || rover.y=== -1 || rover.y === 10) {
-            console.log(`You almost lose our ${rover.name} on mars, we are glad that a martian helped us move back`);
+          if (checkMovement(rover).obstacle === true) {
+            console.log(checkMovement(rover).message);
             moveBackward(rover);
             rover.travelLog.pop();
-          } else if (grid[rover.y][rover.x]){
-            console.log(`You almost crashed with ${grid[rover.y][rover.x]}. Try to be more carefull next time` );
+          } else if (checkMovement(rover).outOfLimits === true){
+            console.log(checkMovement(rover).message);
             moveBackward(rover);
             rover.travelLog.pop();
           }
@@ -141,13 +165,13 @@ function move(rover,commands) {
           rover.travelLog.push(`(${rover.x}, ${rover.y})`);
           grid[rover.y][rover.x] = null;
           moveBackward(rover);
-          if (rover.x === -1 || rover.x === 10 || rover.y=== -1 || rover.y === 10) {
-            console.log(`You almost lose our ${rover.name} on mars, we are glad that a martian helped us move back`);
-            moveForward(rover);
+          if (checkMovement(rover).obstacle === true) {
+            console.log(checkMovement(rover).message);
+            moveBackward(rover);
             rover.travelLog.pop();
-          } else if (grid[rover.y][rover.x]){
-            console.log(`You almost crashed with ${grid[rover.y][rover.x]} Try to be more carefull next time`);
-            moveForward(rover);
+          } else if (checkMovement(rover).outOfLimits === true){
+            console.log(checkMovement(rover).message);
+            moveBackward(rover);
             rover.travelLog.pop();
           }
           grid[rover.y][rover.x] = `${rover.name}`;
