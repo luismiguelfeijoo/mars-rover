@@ -167,11 +167,11 @@ function move(rover,commands) {
           moveBackward(rover);
           if (checkMovement(rover).obstacle === true) {
             console.log(checkMovement(rover).message);
-            moveBackward(rover);
+            moveForward(rover);
             rover.travelLog.pop();
           } else if (checkMovement(rover).outOfLimits === true){
             console.log(checkMovement(rover).message);
-            moveBackward(rover);
+            moveForward(rover);
             rover.travelLog.pop();
           }
           grid[rover.y][rover.x] = `${rover.name}`;
